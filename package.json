@@ -1,0 +1,38 @@
+{
+  "name": "crontab-ui",
+  "version": "0.3.13",
+  "description": "Easy and safe way to manage your crontab file",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "body-parser": "latest",
+    "connect-busboy": "latest",
+    "cron-parser": "latest",
+    "ejs": "latest",
+    "express": "latest",
+    "express-basic-auth": "^1.2.0",
+    "mime-types": "latest",
+    "moment": "latest",
+    "nedb": "latest",
+    "nodemailer": "latest"
+  },
+  "engines": {
+    "node": "latest"
+  },
+  "bin": {
+    "crontab-ui": "bin/crontab-ui.js",
+    "crontab-ui-mailer": "bin/crontab-ui-mailer.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alseambusher/crontab-ui"
+  },
+  "keywords": [
+    "Crontab",
+    "node"
+  ],
+  "author": "Suresh Alse",
+  "license": "MIT"
+}
