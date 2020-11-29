@@ -25,6 +25,15 @@ function messageBox(body, title, ok_text, close_text, callback){
 }
 
 
+function git_sync(){
+	messageBox("<p> 你正在创建git clone脚本 </p>", "确认创建", null, null, function(){
+		$.get(routes.gitSync, {}, function(){
+			location.reload();
+		});
+	});
+
+}
+
 /*********** crontab actions ****************/
 // TODO get rid of global variables
 var schedule = "";

@@ -28,6 +28,8 @@ if (BASIC_AUTH_USER && BASIC_AUTH_PWD) {
     }))
 }
 
+
+
 // include the routes
 var routes = require("./routes").routes;
 var routes_relative = require("./routes").relative
@@ -123,6 +125,12 @@ app.get(routes.crontab, function(req, res, next) {
 // backup crontab db
 app.get(routes.backup, function(req, res) {
 	crontab.backup();
+	res.end();
+});
+
+//git
+app.get(routes.gitSync, function(req, res) {
+	crontab.gitsync();
 	res.end();
 });
 
@@ -234,6 +242,7 @@ process.on('SIGTERM', function() {
 
 app.listen(app.get('port'), app.get('host'), function() {
   console.log("Node version:", process.versions.node);
+  
   fs.access(crontab.db_folder, fs.W_OK, function(err) {
     if(err){
       console.error("Write access to", crontab.db_folder, "DENIED.");

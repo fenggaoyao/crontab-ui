@@ -9,6 +9,7 @@ exports.log_folder = path.join(exports.db_folder, 'logs');
 exports.env_file =  path.join(exports.db_folder, 'env.db');
 exports.crontab_db_file = path.join(exports.db_folder, 'crontab.db');
 
+
 var db = new Datastore({ filename: exports.crontab_db_file});
 var cronPath = "/tmp";
 
@@ -24,6 +25,43 @@ db.loadDatabase(function (err) {
 var exec = require('child_process').exec;
 var fs = require('fs');
 var cron_parser = require("cron-parser");
+
+exports.gitsync=function(){
+
+	console.log("Resetting crontab-ui");
+    var crontabdb = exports.crontab_db_file;
+    var envdb = exports.env_file;
+
+    console.log("Deleting " + crontabdb);
+    try{
+      fs.unlinkSync(crontabdb);
+    } catch (e) {
+      console.log("Unable to delete " + crontabdb);
+    }
+
+    console.log("Deleting " + envdb);
+    try{
+      fs.unlinkSync(envdb);
+    } catch (e) {
+      console.log("Unable to delete " + envdb);
+	}
+	
+	exec("rm -rf /crontab-ui/scripts",function(error, stdout, stderr){
+		if (error) {
+			console.log(error)
+		}
+	})
+
+	exec("crontab -r",function(error, stdout, stderr){
+		if (error) {
+			console.log(error)
+		}
+	})
+
+	const script=process.env.SCRIPTS_URL==undefined ? "https://github.com/fenggaoyao/crontab-script.git":process.env.SCRIPTS_URL;
+	const first_run=path.join(__dirname,"first_run.sh")
+	exports.create_new("脚本git同步",`sh ${first_run} ${script}`,"0 23 * * *",null,"true",{})
+}
 
 
 crontab = function(name, command, schedule, stopped, logging, mailing){
@@ -251,6 +289,8 @@ exports.restore = function(db_name){
 exports.reload_db = function(){
 	db.loadDatabase();
 };
+
+
 
 exports.get_env = function(){
 	if (fs.existsSync(exports.env_file)) {
