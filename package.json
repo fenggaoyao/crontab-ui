@@ -16,7 +16,8 @@
     "mime-types": "latest",
     "moment": "latest",
     "nedb": "latest",
-    "nodemailer": "latest"
+    "nodemailer": "latest",
+    "multer": "^1.4.1"
   },
   "engines": {
     "node": "latest"

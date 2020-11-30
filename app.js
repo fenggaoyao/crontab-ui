@@ -3,7 +3,9 @@ var express = require('express');
 var app = express();
 var crontab = require("./crontab");
 var restore = require("./restore");
+var file=require("./file")
 var moment = require('moment');
+const multer = require('multer');
 var basicAuth = require('express-basic-auth');
 
 var path = require('path');
@@ -30,6 +32,8 @@ if (BASIC_AUTH_USER && BASIC_AUTH_PWD) {
 
 
 
+
+
 // include the routes
 var routes = require("./routes").routes;
 var routes_relative = require("./routes").relative
@@ -45,10 +49,13 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 app.use(busboy()); // to support file uploads
 
 // include all folders
+
 app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/public/css'));
 app.use(express.static(__dirname + '/public/js'));
 app.use(express.static(__dirname + '/config'));
+app.use(express.static(__dirname + '/scripts'));
+
 app.set('views', __dirname + '/views');
 
 // set host to 127.0.0.1 or the value set by environment var HOST
@@ -56,6 +63,39 @@ app.set('host', (process.env.HOST || '127.0.0.1'));
 
 // set port to 8000 or the value set by environment var PORT
 app.set('port', (process.env.PORT || 8000));
+
+
+// upload handler
+var uploadStorage = multer.diskStorage(
+	{
+		destination: function (req, file, cb)
+		{
+			cb(null, `./scripts`);  ///${req.folder}`);
+		},
+		filename: function (req, file, cb)
+		{
+			//let fileName = checkFileExistense(req.query.folder ,file.originalname);
+			cb(null, file.originalname);
+		}
+	});	
+var upload = multer({ storage: uploadStorage });
+app.get(routes.file, function(req, res) {
+	let folder = req.query.folder;
+	file.getfiles(folder,function(result){
+		// console.log("result",JSON.stringify(result))
+		res.render('file', {
+			routes : JSON.stringify(routes_relative),
+			backups : crontab.get_backup_names(),
+			files:JSON.stringify(result)		
+		});
+	})
+  });
+app.post(routes.file, upload.single('file'), function(req, res)
+{
+    console.log(req.file);
+    console.log('file upload...');
+});
+
 
 // root page handler
 app.get(routes.root, function(req, res) {
@@ -72,6 +112,9 @@ app.get(routes.root, function(req, res) {
 		});
 	});
 });
+
+
+
 
 /*
 Handle to save crontab to database

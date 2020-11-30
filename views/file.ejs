@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="jquery.js"></script>
+    <script src="script.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.12/datatables.min.js"></script>
+    <link rel="stylesheet" href="bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css"/>
+    <script type="text/javascript">
+        var files = [];
+        $(function () {
+            files=JSON.parse('<%- files %>');
+            console.log(files)
+        })
+    </script>
+    <style>
+        div#progressBar {
+    background-color: green;
+    height: 10px;
+    width: 0%;  /* for start */
+}
+    </style>
+</head>
+<body>
+    <%- include('navbar.ejs') -%>
+    <div id="progressBar"></div>
+	<div class="form-group">
+    <p><b>文件上传</b></p>
+    <form id="form_fileUpload" method="POST" action="/file" enctype="multipart/form-data">
+        <input type="file" name="file" required>
+        <input type="button" onclick="uploadToServer(document.getElementById('form_fileUpload'), document.getElementById('progressBar'))" value="上传" />
+    </form>
+    </div>
+
+	<table class="table table-striped" id="main_table">
+    <div class="container-fluid">
+		<thead>
+            <tr>
+                <th>#</th>
+                <th>大小</th>
+                <th>名字</th>              
+                <th>地址</th>            
+            </tr>
+        </thead>
+        <tbody>
+            <% var index = 1 %>
+            <% JSON.parse(files).forEach((file)=>{ %>
+                <tr>
+                    <td>
+                        <%= index %>.
+                        <% index += 1 %>
+                    </td>
+                    <td>
+                        <%= file.filesize %>                     
+                    </td>
+                
+                    <td>
+                        <a href="<%= file.url %>" /> <%= file.value %> </td>                                         
+                    </td>
+                    
+                    <td>
+                        <%= file.address %>                     
+                    </td>
+                </tr>
+
+                <%}) %>
+
+        </tbody>
+    </table>
+
+    </div>
+    
+
+     
+</body>
+</html>
