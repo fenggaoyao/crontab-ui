@@ -26,7 +26,7 @@ function messageBox(body, title, ok_text, close_text, callback){
 
 
 function git_sync(){
-	messageBox("<p> 你正在创建git clone脚本 </p>", "确认创建", null, null, function(){
+	messageBox("<p> 你正在删除脚本和重新git clone </p>", "确认初始化", null, null, function(){
 		$.get(routes.gitSync, {}, function(){
 			location.reload();
 		});

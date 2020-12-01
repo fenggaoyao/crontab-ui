@@ -23,7 +23,7 @@ exports.getfiles=function(folder,callback){
                                 url:url,
                                 value:value,
                                 filesize:filesize,
-                                address:`${readingdirectory}/${value}`
+                                address:`/crontab-ui/scripts${url}`
                             }
                         )
                     }
@@ -32,9 +32,9 @@ exports.getfiles=function(folder,callback){
                         result.push(
                             {
                                 url:`/file?folder=${url}`,
-                                value:"目录",
-                                filesize:"",
-                                address:`${readingdirectory}/${value}`
+                                value:value,
+                                filesize:"目录",
+                                address:`/crontab-ui/scripts${url}`
                             }
                         )
                     }

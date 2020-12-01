@@ -60,7 +60,10 @@ exports.gitsync=function(){
 
 	const script=process.env.SCRIPTS_URL==undefined ? "https://github.com/fenggaoyao/crontab-script.git":process.env.SCRIPTS_URL;
 	const first_run=path.join(__dirname,"first_run.sh")
-	exports.create_new("脚本git同步",`sh ${first_run} ${script}`,"0 23 * * *",null,"true",{})
+	exports.create_new("脚本git同步",`sh ${first_run} ${script}`,"0 23 * * *","true",null)
+	setTimeout(() => {
+		exports.autosave_crontab(()=>{})
+	}, 1000); 
 }
 
 
@@ -172,12 +175,12 @@ make_command = function(tab) {
 
 	if (tab.logging && tab.logging == "true") {
 		crontab_job_string += "; if test -f " + stderr +
-		"; then date >> \"" + log_file + "\"" +
+		"; then date > \"" + log_file + "\"" +
 		"; cat " + stderr + " >> \"" + log_file + "\"" +
 		"; fi";
 
 		crontab_job_string += "; if test -f " + stdout +
-		"; then date >> \"" + log_file_stdout + "\"" +
+		"; then date > \"" + log_file_stdout + "\"" +
 		"; cat " + stdout + " >> \"" + log_file_stdout + "\"" +
 		"; fi";
 	}
@@ -196,8 +199,6 @@ make_command = function(tab) {
 }
 
 add_env_vars = function(env_vars, command) {
-	console.log("env vars");
-	console.log(env_vars)
 	if (env_vars)
 		return "(" + env_vars.replace(/\s*\n\s*/g,' ').trim() + "; (" + command + "))";
 	

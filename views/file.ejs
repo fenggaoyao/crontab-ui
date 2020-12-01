@@ -14,7 +14,6 @@
         var files = [];
         $(function () {
             files=JSON.parse('<%- files %>');
-            console.log(files)
         })
     </script>
     <style>
@@ -27,7 +26,8 @@
 </head>
 <body>
     <%- include('navbar.ejs') -%>
-    <div id="progressBar"></div>
+    <p>注意：脚本文件根目录/crontab-ui/scripts </p>
+    <p id="progressBar"></p>
 	<div class="form-group">
     <p><b>文件上传</b></p>
     <form id="form_fileUpload" method="POST" action="/file" enctype="multipart/form-data">
