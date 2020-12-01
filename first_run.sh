@@ -5,13 +5,14 @@ set -e
 RootDir=$(cd $(dirname $0); pwd)
 ScriptsDir="${RootDir}/scripts"
 
-git=$1
+br=$1
+git=$2
 
 function Git_Scripts {
  if [ ! -d ${ScriptsDir} ]
     then
       echo -e "\n${ScriptsDir} 目录不存在，开始克隆...\n"
-      mkdir ${ScriptsDir} && git clone $git ${ScriptsDir}
+      mkdir ${ScriptsDir} && git clone -b $br $git ${ScriptsDir}
       echo -e "开始安装依赖...\n"
       cd ${ScriptsDir} && npm install
     else

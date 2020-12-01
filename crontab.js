@@ -59,8 +59,10 @@ exports.gitsync=function(){
 	})
 
 	const script=process.env.SCRIPTS_URL==undefined ? "https://github.com/fenggaoyao/crontab-script.git":process.env.SCRIPTS_URL;
+	const brach=process.env.BRACH==undefined ? "main":process.env.BRACH;
+
 	const first_run=path.join(__dirname,"first_run.sh")
-	exports.create_new("脚本git同步",`sh ${first_run} ${script}`,"0 23 * * *","true",null)
+	exports.create_new("脚本git同步",`sh ${first_run} ${brach} ${script}`,"0 23 * * *","true",null)
 	setTimeout(() => {
 		exports.autosave_crontab(()=>{})
 	}, 1000); 
