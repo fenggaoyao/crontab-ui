@@ -19,15 +19,34 @@
 		$("#env_vars").val(`<%- env  %>`);
 	})
 </script>
+<style>
+	.command{
+		display: flex;
+	}
+	.form-group{
+		flex: 1;
+		margin-left: 10px;
+	}
+	
+</style>
 </head>
 <body>
 <%- include('navbar.ejs') -%>
 <div class="container-fluid">
-	<h2>任务计划</h2>
 	<div class="form-group">
 		<label for="env_vars">环境变量:</label>
-		<textarea class="form-control" rows="3" id="env_vars" placeholder="# Please set PATH, MAILTO, HOME... here"></textarea>
+		<textarea class="form-control" rows="2" id="env_vars" placeholder="# Please set PATH, MAILTO, HOME... here"></textarea>
 	</div>
+	<label for="command">命令:</label><a class="btn btn-primary" onclick="excuteCommand();"><span class="glyphicon glyphicon-play" aria-hidden="true"></span> 执行</a>
+
+	<div class="command">
+	<div class="form-group">		
+		<textarea class="form-control" rows="5" id="command"></textarea>
+	</div>
+	<div class="form-group">
+		<textarea class="form-control" rows="5" id="commandResult"></textarea>
+	</div>
+   </div>
 	<a class="btn btn-primary" onclick="newJob();"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> 新建</a>
 	<a class="btn btn-info" onclick="doBackup();"><span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> 备份</a>
 	<form id="import_form" enctype="multipart/form-data" action="<%= JSON.parse(routes).import %>" method="post" style="display:none">
@@ -36,7 +55,7 @@
 	<a class="btn btn-warning" onclick="import_db()"><span class="glyphicon glyphicon-import" aria-hidden="true"></span> 导入</a>
 	<a class="btn btn-warning" href="<%= JSON.parse(routes).export %>"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> 导出</a>
 	<!--<a class="btn btn-info" onclick="import_crontab()"><span class="glyphicon glyphicon-import" aria-hidden="true"></span> Import from crontab</a>-->
-	<a class="btn btn-danger" onclick="git_sync()"><span class="glyphicon glyphicon-import" aria-hidden="true"></span>初始化</a>
+	<a class="btn btn-danger" onclick="git_sync()"><span class="glyphicon glyphicon-import" aria-hidden="true"></span>初始化</a>
 
 	<a class="btn btn-success" onclick="getCrontab();"><span class="glyphicon glyphicon-open" aria-hidden="true"></span> 提取crontab</a>
 	<a class="btn btn-success" onclick="setCrontab();"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> 写入crontab</a>

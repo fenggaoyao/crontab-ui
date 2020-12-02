@@ -16,7 +16,8 @@ exports.routes = {
 	"logger": "/logger",
 	"stdout": "/stdout",
 	"gitSync":"/gitSync",
-	"file":"/file"
+	"file":"/file",
+	"command":"/command"
 };
 exports.relative = Object.keys(exports.routes).reduce((p, c) => ({...p, [c]: exports.routes[c].replace(/^\//, '')}), {});
 exports.relative["root"] = ".";

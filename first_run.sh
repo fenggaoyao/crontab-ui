@@ -16,8 +16,7 @@ function Git_Scripts {
       echo -e "开始安装依赖...\n"
       cd ${ScriptsDir} && npm install
     else
-      cd ${ScriptsDir}
-      git pull
+      cd ${ScriptsDir}  &&  git pull  && npm install     
       echo -e "git更新成功"
     fi
 }

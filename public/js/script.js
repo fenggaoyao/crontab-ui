@@ -315,3 +315,19 @@ function uploadToServer(form, uploadProgressDisplayerId)
 
     xhr.send(formData);
 }
+
+function excuteCommand(){
+
+	if(!!$("#command").val()){
+		$.get(routes.command, { "command": $("#command").val(),env_vars: $("#env_vars").val() }, function(data, status){
+	
+			$("#commandResult").text(data)
+		}).fail(function(response) {
+			errorMessageBox(response.statusText,"Error");
+		});	
+
+	}
+
+
+	
+}
