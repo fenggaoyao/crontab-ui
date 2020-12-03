@@ -22,6 +22,9 @@
     height: 10px;
     width: 0%;  /* for start */
 }
+       form#form_fileUpload{
+         display: flex;
+}
     </style>
 </head>
 <body>
@@ -43,7 +46,8 @@
                 <th>#</th>
                 <th>大小</th>
                 <th>名字</th>              
-                <th>地址</th>            
+                <th>地址</th>      
+                <th>修改时间</th>        
             </tr>
         </thead>
         <tbody>
@@ -64,6 +68,10 @@
                     
                     <td>
                         <%= file.address %>                     
+                    </td>
+
+                    <td>
+                        <%= file.mtime %>                     
                     </td>
                 </tr>
 

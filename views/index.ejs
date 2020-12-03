@@ -2,6 +2,7 @@
 <head>
 <title>Crontab管理页</title>
 <script src="jquery.js"></script>
+<script src="jquery.collapse.js"></script>
 <script src="script.js"></script>
 <script src="bootstrap.min.js"></script>
 <script src="mailconfig.js"></script>
@@ -35,24 +36,34 @@
 <body>
 <%- include('navbar.ejs') -%>
 <div class="container-fluid">
-	<div class="form-group">
-		<label for="env_vars">环境变量:</label>
-		<textarea class="form-control" rows="2" id="env_vars" placeholder="# Please set PATH, MAILTO, HOME... here"></textarea>
-	</div>
-	
-	<select  class="selectpicker" data-style="btn-info" id="env_select" >
+
+	<div data-collapse>
+		<div>》环境变量:</div>
+		<div class="form-group">
+		
+			<textarea class="form-control" rows="2" id="env_vars" placeholder="# Please set PATH, MAILTO, HOME... here"></textarea>
+		</div>
+		<div>》命令窗口:</div>
+		<div>			
+    	<select  class="selectpicker" data-style="btn-info" id="env_select" >
 		<option value="javascript">javascript</option>
 		<option value="shell">shell</option>
 	  </select><a class="btn btn-primary" onclick="excuteCommand();"><span class="glyphicon glyphicon-play" aria-hidden="true"></span> 执行</a>
+    
+		<div class="command">
+			<div class="form-group">		
+				<textarea class="form-control" rows="5" id="command"></textarea>
+			</div>
+			<div class="form-group">
+				<textarea class="form-control" rows="5" id="commandResult"></textarea>
+			</div>
+		</div>
+	</div>
+	  </div>
 
-	<div class="command">
-	<div class="form-group">		
-		<textarea class="form-control" rows="5" id="command"></textarea>
-	</div>
-	<div class="form-group">
-		<textarea class="form-control" rows="5" id="commandResult"></textarea>
-	</div>
-   </div>
+
+
+
 	<a class="btn btn-primary" onclick="newJob();"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> 新建</a>
 	<a class="btn btn-info" onclick="doBackup();"><span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span> 备份</a>
 	<form id="import_form" enctype="multipart/form-data" action="<%= JSON.parse(routes).import %>" method="post" style="display:none">

@@ -30,7 +30,8 @@ exports.getfiles=function(folder,callback){
                                     url:url,
                                     value:value,
                                     filesize:filesize,
-                                    address:`/crontab-ui/scripts${url}`
+                                    address:`/crontab-ui/scripts${url}`,
+                                    mtime:stats.mtime
                                 }
                             )
                         }
@@ -41,7 +42,8 @@ exports.getfiles=function(folder,callback){
                                     url:`/file?folder=${url}`,
                                     value:value,
                                     filesize:"目录",
-                                    address:`/crontab-ui/scripts${url}`
+                                    address:`/crontab-ui/scripts${url}`,
+                                    mtime:stats.mtime
                                 }
                             )
                         }

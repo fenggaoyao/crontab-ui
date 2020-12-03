@@ -302,7 +302,7 @@ function uploadToServer(form, uploadProgressDisplayerId)
 
             if(progress == 100)
             {				
-				alert('Your file is uploaded successfuly');
+				alert('你的文件已成功上传');
 				location.reload();
             }
         }
