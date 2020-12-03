@@ -4,9 +4,6 @@ var exec = require('child_process').exec;
 
 const scripts=path.join(__dirname,"scripts");
 
-
-
-
 exports.getfiles=function(folder,callback){
     const responsedelay=50
     let readingdirectory='./scripts'
@@ -62,14 +59,13 @@ exports.getfiles=function(folder,callback){
     {
         setTimeout(function() {callback(result);}, responsedelay);
     } 
-
-
 }
 
 exports.runCommand=function(env,env_vars,command,callback){  
-   command=`const Env=require('./../Env.min.js');
-   var $ = new Env('');`+command
     if(fs.existsSync(scripts)){ 
+        if(env=='javascript')  command=`const Env=require('./../Env.min.js');
+        var $ = new Env('');`+command
+         if(env==='shell') command="cd scripts &&"+command;
         const command_file = env=="javascript"?path.join(scripts, 'command.js') : path.join(scripts, 'command.sh') ;       
         fs.writeFile(command_file, command, function(err){
             if (err) {
@@ -77,9 +73,9 @@ exports.runCommand=function(env,env_vars,command,callback){
                 callback(err);
             }
             try{
-                console.log("env_vars",env_vars)
+                //console.log("env_vars",env_vars)
                 const shell=add_env_vars(env_vars,env,command_file);               
-                console.log(shell)
+                //console.log(shell)
                 exec(shell, function(err, stdout, stderr) {
                     if (err) {
                         //console.error(err);
@@ -118,6 +114,6 @@ function ConvertSize(number)
 add_env_vars = function(env_vars, env,command_file) {
     const command=(env=="javascript"? "node ":"sh ")+command_file
 	if (env_vars)
-		return "(" + env_vars.replace(/\s*\n\s*/g,' ').trim() + "; (" + command + "))";	
+		return "(export " + env_vars.replace(/\s*\n\s*/g,' ').trim() + "; (" + command + "))";	
 	return command;
 }

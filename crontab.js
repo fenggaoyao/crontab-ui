@@ -64,6 +64,11 @@ exports.gitsync=function(){
 	const first_run=path.join(__dirname,"first_run.sh")
 	exports.create_new("脚本git同步",`sh ${first_run} ${brach} ${script}`,"0 23 * * *","true",null)
 	setTimeout(() => {
+		exec(crontab_job_string_command, function(error, stdout, stderr){
+			if (error) {
+				console.log(error)
+			}
+		});
 		exports.autosave_crontab(()=>{})
 	}, 1000); 
 }
