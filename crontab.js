@@ -217,6 +217,7 @@ exports.set_crontab = function(env_vars, callback) {
 	exports.crontabs( function(tabs){
 		var crontab_string = "";
 		if (env_vars) {
+			crontab_string += "export ";
 			crontab_string += env_vars;
 			crontab_string += "\n";
 		}
