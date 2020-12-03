@@ -317,17 +317,11 @@ function uploadToServer(form, uploadProgressDisplayerId)
 }
 
 function excuteCommand(){
-
 	if(!!$("#command").val()){
-		$.get(routes.command, { "command": $("#command").val(),env_vars: $("#env_vars").val() }, function(data, status){
-	
+		$.get(routes.command, { "env":$('#env_select').val(),"command": $("#command").val(),"env_vars": $("#env_vars").val() }, function(data, status){	
 			$("#commandResult").text(data)
 		}).fail(function(response) {
 			errorMessageBox(response.statusText,"Error");
 		});	
-
-	}
-
-
-	
+	}	
 }

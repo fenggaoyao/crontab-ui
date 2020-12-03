@@ -17,6 +17,8 @@
 		crontabs = JSON.parse('<%- crontabs.replace(/\\\\/g, "\\\\\\\\").replace(/\\\"/g,"\\\\\"").replace(/\'/g,"\\\'").replace(/\\t/g, " ") %>');
 		routes = JSON.parse('<%- routes %>');
 		$("#env_vars").val(`<%- env  %>`);
+
+		
 	})
 </script>
 <style>
@@ -37,7 +39,11 @@
 		<label for="env_vars">环境变量:</label>
 		<textarea class="form-control" rows="2" id="env_vars" placeholder="# Please set PATH, MAILTO, HOME... here"></textarea>
 	</div>
-	<label for="command">命令:</label><a class="btn btn-primary" onclick="excuteCommand();"><span class="glyphicon glyphicon-play" aria-hidden="true"></span> 执行</a>
+	
+	<select  class="selectpicker" data-style="btn-info" id="env_select" >
+		<option value="javascript">javascript</option>
+		<option value="shell">shell</option>
+	  </select><a class="btn btn-primary" onclick="excuteCommand();"><span class="glyphicon glyphicon-play" aria-hidden="true"></span> 执行</a>
 
 	<div class="command">
 	<div class="form-group">		

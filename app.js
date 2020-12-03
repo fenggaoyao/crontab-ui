@@ -97,7 +97,7 @@ app.post(routes.file, upload.single('file'), function(req, res)
 });
 
 app.get(routes.command,function(req, res){
-	file.runCommand(req.query.env_vars,req.query.command,function(data){		
+	file.runCommand(req.query.env,req.query.env_vars,req.query.command,function(data){		
 		res.send(data)
 	})
 })
