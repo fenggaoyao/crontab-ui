@@ -158,7 +158,7 @@ exports.runjob = function(_id) {
 	});
 };
 
-make_command = function(tab) {
+ function make_command(tab) {
 	var crontab_job_string = "";
 
 	let stderr = path.join(cronPath, tab._id + ".stderr");
@@ -205,9 +205,9 @@ make_command = function(tab) {
 	return crontab_job_string;
 }
 
-add_env_vars = function(env_vars, command) {
+ function add_env_vars(env_vars, command) {
 	if (env_vars)
-		return "(" + env_vars.replace(/\s*\n\s*/g,' ').trim() + "; (" + command + "))";
+		return "( export " + env_vars.replace(/\s*\n\s*/g,' ').trim() + "; (" + command + "))";
 	
 	return command;
 }

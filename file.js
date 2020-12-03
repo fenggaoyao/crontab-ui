@@ -111,7 +111,7 @@ function ConvertSize(number)
     else if(number > 1073741824 && number <= 1099511627776) { return ((number / 1073741824).toPrecision(3) + ' GB'); }
 }
 
-add_env_vars = function(env_vars, env,command_file) {
+ function add_env_vars(env_vars, env,command_file) {
     const command=(env=="javascript"? "node ":"sh ")+command_file
 	if (env_vars)
 		return "(export " + env_vars.replace(/\s*\n\s*/g,' ').trim() + "; (" + command + "))";	
