@@ -286,7 +286,7 @@ exports.get_backup_names = function(){
 
 exports.backup = function(){
 	//TODO check if it failed
-	fs.createReadStream(exports.crontab_db_file).pipe(fs.createWriteStream( path.join(exports.db_folder, 'backup ' + (new Date()).toString().replace("+", " ") + '.db')));
+	fs.createReadStream(exports.crontab_db_file).pipe(fs.createWriteStream( path.join(exports.db_folder, 'backup' + (new Date().getTime()).toString() + '.db')));
 };
 
 exports.restore = function(db_name){

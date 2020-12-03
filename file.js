@@ -28,7 +28,7 @@ exports.getfiles=function(folder,callback){
                                     value:value,
                                     filesize:filesize,
                                     address:`/crontab-ui/scripts${url}`,
-                                    mtime:stats.mtime
+                                    mtime: new Date(stats.mtime.getTime()).toLocaleString()
                                 }
                             )
                         }
