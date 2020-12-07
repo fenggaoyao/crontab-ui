@@ -202,6 +202,9 @@ exports.runjob = function(_id) {
 		crontab_job_string += "; /usr/local/bin/node " + __dirname + "/bin/crontab-ui-mailer.js " + tab._id + " " + stdout + " " + stderr;
 	}
 
+	crontab_job_string=`flock -xn /tmp/${tab._id}.lock -c '${crontab_job_string}'`
+
+
 	return crontab_job_string;
 }
 
