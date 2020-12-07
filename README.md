@@ -19,4 +19,10 @@ docker rm $(docker ps -a | grep "Exited" | awk '{print $1 }') //删除容器
 
 docker rmi $(docker images | grep "none" | awk '{print $3}') //删除镜像
 
+docker run  -d  -e BASIC_AUTH_USER=**** \
+ -e BASIC_AUTH_PWD=**** \
+ -e SCRIPTS_URL=https://github.com/lxk0301/jd_scripts.git    -e BRACH=master \
+ -p 8080:80 registry.cn-hangzhou.aliyuncs.com/cloudsu/crontab-ui:1.2.0
+
+
 ```
