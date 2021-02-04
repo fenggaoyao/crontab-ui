@@ -29,20 +29,25 @@ function git_sync(){
 
 	$("#scripts").modal("show");
 
-	let project = $("#project-name").val();
-	let branch = $("#branch-name").val();
-
-	if(!!project && !!project){
+		$("#scripts-save").unbind("click"); // remove existing events attached to this
 		$("#scripts-save").click(function(){	
+
+			let project = $("#project-name").val();
 			let git = $("#git-address").val();
+		
+			
+			//console.log("git",project,git)
+
+			if(!!project && !!git){
+			let branch = $("#branch-name").val();
 			let env = $("#env").val();
 			let init = $("#init").val();
-	
 			$.get(routes.gitSync, {"project":project,"branch":branch,"git":git,"env":env,"init":init}, function(){
 				location.reload();
-			});		
+			});	
+		}	
 		})
-	}	
+	
 
 }
 
@@ -337,11 +342,11 @@ function excuteCommand(){
 		// });	
 
 		var xhr=new XMLHttpRequest();
-		console.log($("#command").val())
+		//console.log($("#command").val())
 		var url=`${routes.command}?env=${$('#env_select').val()}&command=${$("#command").val()}&env_vars=${$("#env_vars").val()}`
 		xhr.open("GET", url, true);
 		xhr.onprogress=()=>{
-			console.log(xhr.responseText)
+			//console.log(xhr.responseText)
 			$("#commandResult").text(xhr.responseText)
 		}
 		xhr.onerror=function(response){

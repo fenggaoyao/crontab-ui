@@ -4,7 +4,7 @@ var Datastore = require('nedb');
 var path = require("path");
 
 exports.db_folder = process.env.CRON_DB_PATH === undefined ? path.join(__dirname,  "crontabs") : process.env.CRON_DB_PATH;
-console.log("Cron db path: " + exports.db_folder);
+//console.log("Cron db path: " + exports.db_folder);
 exports.log_folder = path.join(exports.db_folder, 'logs');
 exports.env_file =  path.join(exports.db_folder, 'env.db');
 exports.crontab_db_file = path.join(exports.db_folder, 'crontab.db');
@@ -29,7 +29,7 @@ var cron_parser = require("cron-parser");
 exports.gitsync=function(project,branch,git,env,init){
 
 
-	const shell=path.join(__dirname,"git-node.sh")
+	const shell=path.join(__dirname,"git-pull.sh")
 	exports.create_new("脚本git同步",`sh ${shell} ${project} ${branch} ${git} ${env} ${init}`,"0 23 * * *","true",null)
 	setTimeout(() => {
 		exec(`sh ${shell} ${project} ${branch} ${git} ${env} ${init}`, function(error, stdout, stderr){
@@ -113,10 +113,10 @@ exports.runjob = function(_id) {
 
 		crontab_job_string_command = add_env_vars(env_vars, crontab_job_string_command)
 
-		console.log("Running job")
-		console.log("ID: " + _id)		
-		console.log("Original command: " + res.command)
-		console.log("Executed command: " + crontab_job_string_command)
+		// console.log("Running job")
+		// console.log("ID: " + _id)		
+		// console.log("Original command: " + res.command)
+		// console.log("Executed command: " + crontab_job_string_command)
 
 		exec(crontab_job_string_command, function(error, stdout, stderr){
 			if (error) {

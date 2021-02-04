@@ -17,12 +17,21 @@ function Git_Scripts {
     then
       echo -e "\n${ScriptsDir} 目录不存在，开始克隆...\n"
       mkdir ${ScriptsDir} && git clone -b $br $git ${ScriptsDir}      
-      if [ $node="node" ] then echo -e "node开始安装依赖...\n" && cd ${ScriptsDir} && npm install  fi 
+      if [ $node="node" ] 
+        then 
+          echo -e "node开始安装依赖...\n" && cd ${ScriptsDir} && npm install  
+      fi 
     else
       cd ${ScriptsDir} 
       git fetch --all && git reset --hard origin/$br && git pull 
-      if [ $node="node" ]  then  npm install   fi   
-      if [ $callback ]   then  npm install  && $node $callback  fi   
+      if [ $node="node" ]  
+         then  
+            npm install   
+      fi   
+      if [ $callback ]   
+         then  
+           npm install  && $node $callback  
+      fi   
       echo -e "git更新成功"
     fi
 }

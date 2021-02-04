@@ -13,8 +13,7 @@ WORKDIR /crontab-ui
 COPY supervisord.conf /etc/supervisord.conf
 COPY . /crontab-ui
 
-# RUN  chmod u+x ./first_run.sh && \
-#     npm install
+RUN  chmod u+x ./git-pull.sh && npm install 
 
 ENV   HOST 0.0.0.0
 

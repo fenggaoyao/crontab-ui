@@ -73,7 +73,7 @@ var uploadStorage = multer.diskStorage(
 	{
 		destination: function (req, file, cb)
 		{			
-			console.log(req.query)			
+			//console.log(req.query)			
 			if(req.query.folder)
 			 cb(null, `./scripts/${req.query.folder}`);
 			else
@@ -103,7 +103,7 @@ app.get(routes.file, function(req, res) {
 app.post(routes.file, upload.single('file'), function(req, res)
 {
     // console.log(req.file);
-    console.log('file upload...');
+    //console.log('file upload...');
 });
 
 
@@ -127,16 +127,16 @@ app.post(routes.project, multer({
 		if(err){
 			 throw err;
 		}
-		console.log('文件删除成功！');
+		//console.log('文件删除成功！');
    })
   })
 
 app.get(routes.command,function(req, res){	
-	console.log(req.query.command)
+	//console.log(req.query.command)
 	
 	file.runCommand(req.query.env,req.query.env_vars,req.query.command,function(data,code){		
 		res.send(data)
-		console.log(code)
+		//console.log(code)
 		// if(!!code) res.end()
 	})
 	// res.header('transfer-encoding', 'chunked');
