@@ -1,7 +1,7 @@
 var fs = require('fs');
 var path = require("path");
 var exec = require('child_process').exec;
-
+const { spawn } = require('child_process');
 const scripts=path.join(__dirname,"scripts");
 
 exports.getfiles=function(folder,callback){
@@ -66,7 +66,8 @@ exports.runCommand=function(env,env_vars,command,callback){
         if(env=='javascript')  command=`const Env=require('./../Env.min.js');
         var $ = new Env('');`+command
          if(env==='shell') command="cd scripts &&"+command;
-        const command_file = env=="javascript"?path.join(scripts, 'command.js') : path.join(scripts, 'command.sh') ;       
+        const command_file = env=="javascript"?path.join(scripts, 'command.js') : path.join(scripts, 'command.sh') ;  
+        console.log(command)     
         fs.writeFile(command_file, command, function(err){
             if (err) {
                 console.error(err);
@@ -75,7 +76,21 @@ exports.runCommand=function(env,env_vars,command,callback){
             try{
                 //console.log("env_vars",env_vars)
                 const shell=add_env_vars(env_vars,env,command_file);               
-                //console.log(shell)
+                //console.log(shell)             
+
+                // if(env=="javascript"){
+                //  const ls = spawn('node', [path.join(scripts, 'command.js')]);
+                //  ls.stdout.on('data', (data) => {
+                //     callback(data);
+                //   });                 
+                             
+                //   ls.on('close', (code) => {
+                //     callback(null,code);
+                //   });
+
+                // }else{
+                   
+                // }
                 exec(shell, function(err, stdout, stderr) {
                     if (err) {
                         //console.error(err);
@@ -85,9 +100,9 @@ exports.runCommand=function(env,env_vars,command,callback){
                         // console.log("stdout",stdout)  
                         // console.log("stderr",stderr)  
                         if(stdout) 
-                          callback(stdout);
+                        callback(stdout);
                         if(stderr)
-                          callback(stdout);                        
+                        callback(stdout);                        
                     }
                 }); 
             }
@@ -99,6 +114,19 @@ exports.runCommand=function(env,env_vars,command,callback){
     }else{
         callback("脚本文件command.js|sh存储在scripts文件夹,要先初始化操作");
     }
+
+    // const ls = spawn('node', [[path.join(scripts, 'command.js')]]);
+    // ls.stdout.on('data', (data) => {
+    //    callback(data);
+    //  });
+     
+    //  ls.stderr.on('data', (data) => {
+    //    callback(err);
+    //  });
+     
+    //  ls.on('close', (code) => {
+    //    callback(null,code);
+    //  });
 }
 
 

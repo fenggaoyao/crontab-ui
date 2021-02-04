@@ -17,7 +17,8 @@
     "moment": "latest",
     "nedb": "latest",
     "nodemailer": "latest",
-    "multer": "^1.4.1"
+    "multer": "^1.4.1",
+    "tar": "^6.0.5"
   },
   "engines": {
     "node": "latest"

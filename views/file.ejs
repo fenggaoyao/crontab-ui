@@ -12,8 +12,12 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css"/>
     <script type="text/javascript">
         var files = [];
+
+        
         $(function () {
             files=JSON.parse('<%- files %>');
+            //routes backups
+         
         })
     </script>
     <style>
@@ -22,22 +26,44 @@
     height: 10px;
     width: 0%;  /* for start */
 }
-       form#form_fileUpload{
+       form#form_fileUpload, form#form_tarfileUpload{
          display: flex;
 }
+    
+      table td{  padding:5px;}
+
     </style>
 </head>
 <body>
     <%- include('navbar.ejs') -%>
-    <p>注意：脚本文件根目录/crontab-ui/scripts </p>
-    <p id="progressBar"></p>
+     <p id="progressBar"></p>
 	<div class="form-group">
-    <p><b>文件上传</b></p>
-    <form id="form_fileUpload" method="POST" action="/file" enctype="multipart/form-data">
+
+    <table >
+<tr>
+    <td> <p><b>文件上传</b></p></td>
+    <td>  <p><b>上传压缩文件到脚本根目录/crontab-ui/scripts </b></p> </td>
+
+</tr>
+
+<tr>
+    <td>   
+        <form id="form_fileUpload" method="POST" action="<%- folder %>" enctype="multipart/form-data">
+       <input type="file" name="file" required>
+       <input type="button" onclick="uploadToServer(document.getElementById('form_fileUpload'), document.getElementById('progressBar'))" value="上传" />
+   </form></td>
+    <td>    <form id="form_tarfileUpload" method="POST" action="/project" enctype="multipart/form-data">
         <input type="file" name="file" required>
-        <input type="button" onclick="uploadToServer(document.getElementById('form_fileUpload'), document.getElementById('progressBar'))" value="上传" />
-    </form>
+        <input type="button" onclick="uploadToServer(document.getElementById('form_tarfileUpload'), document.getElementById('progressBar'))" value="上传" />
+     </form></td>    
+</tr>
+
+    </table>
+
+    
+
     </div>
+
 
 	<table class="table table-striped" id="main_table">
     <div class="container-fluid">

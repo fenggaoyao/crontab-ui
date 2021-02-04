@@ -26,11 +26,23 @@ function messageBox(body, title, ok_text, close_text, callback){
 
 
 function git_sync(){
-	messageBox("<p> 你正在删除脚本和重新git clone </p>", "确认初始化", null, null, function(){
-		$.get(routes.gitSync, {}, function(){
-			location.reload();
-		});
-	});
+
+	$("#scripts").modal("show");
+
+	let project = $("#project-name").val();
+	let branch = $("#branch-name").val();
+
+	if(!!project && !!project){
+		$("#scripts-save").click(function(){	
+			let git = $("#git-address").val();
+			let env = $("#env").val();
+			let init = $("#init").val();
+	
+			$.get(routes.gitSync, {"project":project,"branch":branch,"git":git,"env":env,"init":init}, function(){
+				location.reload();
+			});		
+		})
+	}	
 
 }
 
@@ -318,10 +330,25 @@ function uploadToServer(form, uploadProgressDisplayerId)
 
 function excuteCommand(){
 	if(!!$("#command").val()){
-		$.get(routes.command, { "env":$('#env_select').val(),"command": $("#command").val(),"env_vars": $("#env_vars").val() }, function(data, status){	
-			$("#commandResult").text(data)
-		}).fail(function(response) {
+		// $.get(routes.command, { "env":$('#env_select').val(),"command": $("#command").val(),"env_vars": $("#env_vars").val() }, function(data, status){	
+		// 	$("#commandResult").text(data)
+		// }).fail(function(response) {
+		// 	errorMessageBox(response.statusText,"Error");
+		// });	
+
+		var xhr=new XMLHttpRequest();
+		console.log($("#command").val())
+		var url=`${routes.command}?env=${$('#env_select').val()}&command=${$("#command").val()}&env_vars=${$("#env_vars").val()}`
+		xhr.open("GET", url, true);
+		xhr.onprogress=()=>{
+			console.log(xhr.responseText)
+			$("#commandResult").text(xhr.responseText)
+		}
+		xhr.onerror=function(response){
 			errorMessageBox(response.statusText,"Error");
-		});	
+	}
+		xhr.send();
+		
+
 	}	
 }

@@ -83,3 +83,32 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+
+<div class="modal fade" id="scripts">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="scripts-title">新增脚本任务（git或上传压缩文件方式）</h4>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <label>项目名(文件夹)</label>
+        <input type='text' class='form-control' id='project-name'/><br />
+        <label>分支</label>
+        <input type='text' class='form-control'  value="master" id='branch-name'/><br />
+        <label>git地址</label>
+        <input type='text' class='form-control' id='git-address'/><br />
+        <label>环境</label>
+        <input type='text' class='form-control' value="node" id='env'/><br />
+        <label>初始化</label>
+        <input type='text' class='form-control' value="./Replace.js" id='init'/><br />      
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" >关闭</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" id="scripts-save">确认</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

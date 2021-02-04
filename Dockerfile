@@ -1,5 +1,5 @@
 # docker run --rm -d -p 8080:80 cloudsu/crontab-ui:latest
-FROM fenggaoyao/python-node-git
+FROM fenggaoyao/python-node-dotnet
 
 ENV   CRON_PATH /etc/crontabs
 
@@ -12,8 +12,9 @@ WORKDIR /crontab-ui
 
 COPY supervisord.conf /etc/supervisord.conf
 COPY . /crontab-ui
-RUN  chmod u+x ./first_run.sh && \
-    npm install
+
+# RUN  chmod u+x ./first_run.sh && \
+#     npm install
 
 ENV   HOST 0.0.0.0
 

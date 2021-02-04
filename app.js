@@ -13,6 +13,8 @@ var mime = require('mime-types');
 var fs = require('fs');
 var busboy = require('connect-busboy'); // for file upload
 
+const tar =require('tar');
+
 // basic auth
 var BASIC_AUTH_USER = process.env.BASIC_AUTH_USER;
 var BASIC_AUTH_PWD = process.env.BASIC_AUTH_PWD;
@@ -42,6 +44,7 @@ var routes_relative = require("./routes").relative
 app.set('view engine', 'ejs');
 
 var bodyParser = require('body-parser');
+const { strict } = require('assert');
 app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
@@ -69,8 +72,13 @@ app.set('port', (process.env.PORT || 8000));
 var uploadStorage = multer.diskStorage(
 	{
 		destination: function (req, file, cb)
-		{
-			cb(null, `./scripts`);  ///${req.folder}`);
+		{			
+			console.log(req.query)			
+			if(req.query.folder)
+			 cb(null, `./scripts/${req.query.folder}`);
+			else
+			 cb(null, `./scripts`);//${req.folder}`);			  
+			  
 		},
 		filename: function (req, file, cb)
 		{
@@ -81,25 +89,59 @@ var uploadStorage = multer.diskStorage(
 var upload = multer({ storage: uploadStorage });
 app.get(routes.file, function(req, res) {
 	let folder = req.query.folder;
+	// console.log(req)
 	file.getfiles(folder,function(result){
 		// console.log("result",JSON.stringify(result))
 		res.render('file', {
 			routes : JSON.stringify(routes_relative),
 			backups : crontab.get_backup_names(),
+			folder: req.url,
 			files:  JSON.stringify(result)		
 		});
 	})
   });
 app.post(routes.file, upload.single('file'), function(req, res)
 {
-    console.log(req.file);
+    // console.log(req.file);
     console.log('file upload...');
 });
 
-app.get(routes.command,function(req, res){
-	file.runCommand(req.query.env,req.query.env_vars,req.query.command,function(data){		
+
+app.post(routes.project, multer({
+	dest: "./temp",
+  }).single('file'),async function(req, res){
+	const { file } = req;
+	const releaseDirectory=path.join("scripts",file.originalname.split('.')[0])	
+	  await fs.rmdir(releaseDirectory, {
+		recursive: true,
+	  },()=>{});
+	  await fs.mkdir(releaseDirectory, {
+		recursive: true,
+	  },()=>{});
+	  await tar.extract({
+		file: file.path,
+		cwd: releaseDirectory,
+	  });
+
+	  fs.unlink(file.path, function(err){
+		if(err){
+			 throw err;
+		}
+		console.log('文件删除成功！');
+   })
+  })
+
+app.get(routes.command,function(req, res){	
+	console.log(req.query.command)
+	
+	file.runCommand(req.query.env,req.query.env_vars,req.query.command,function(data,code){		
 		res.send(data)
+		console.log(code)
+		// if(!!code) res.end()
 	})
+	// res.header('transfer-encoding', 'chunked');
+    // res.set('Content-Type', 'text/json');
+
 })
 
 // root page handler
@@ -178,7 +220,7 @@ app.get(routes.backup, function(req, res) {
 
 //git
 app.get(routes.gitSync, function(req, res) {
-	crontab.gitsync();
+	crontab.gitsync(req.query.project,req.query.branch,req.query.git,req.query.env,req.query.init);
 	res.end();
 });
 

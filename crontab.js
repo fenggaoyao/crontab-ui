@@ -26,45 +26,13 @@ var exec = require('child_process').exec;
 var fs = require('fs');
 var cron_parser = require("cron-parser");
 
-exports.gitsync=function(){
+exports.gitsync=function(project,branch,git,env,init){
 
-	console.log("Resetting crontab-ui");
-    var crontabdb = exports.crontab_db_file;
-    var envdb = exports.env_file;
 
-    console.log("Deleting " + crontabdb);
-    try{
-      fs.unlinkSync(crontabdb);
-    } catch (e) {
-      console.log("Unable to delete " + crontabdb);
-    }
-
-    console.log("Deleting " + envdb);
-    try{
-      fs.unlinkSync(envdb);
-    } catch (e) {
-      console.log("Unable to delete " + envdb);
-	}
-	
-	exec("rm -rf /crontab-ui/scripts",function(error, stdout, stderr){
-		if (error) {
-			console.log(error)
-		}
-	})
-
-	exec("crontab -r",function(error, stdout, stderr){
-		if (error) {
-			console.log(error)
-		}
-	})
-
-	const script=process.env.SCRIPTS_URL==undefined ? "https://github.com/fenggaoyao/crontab-script.git":process.env.SCRIPTS_URL;
-	const brach=process.env.BRACH==undefined ? "main":process.env.BRACH;
-
-	const first_run=path.join(__dirname,"first_run.sh")
-	exports.create_new("脚本git同步",`sh ${first_run} ${brach} ${script}`,"0 23 * * *","true",null)
+	const shell=path.join(__dirname,"git-node.sh")
+	exports.create_new("脚本git同步",`sh ${shell} ${project} ${branch} ${git} ${env} ${init}`,"0 23 * * *","true",null)
 	setTimeout(() => {
-		exec(`sh ${first_run} ${brach} ${script}`, function(error, stdout, stderr){
+		exec(`sh ${shell} ${project} ${branch} ${git} ${env} ${init}`, function(error, stdout, stderr){
 			if (error) {
 				console.log(error)
 			}
