@@ -117,10 +117,10 @@ app.post(routes.project, multer({
 	const releaseDirectory=path.join("scripts",file.originalname.split('.')[0])	
 	  await promises.rmdir(releaseDirectory, {
 		recursive: true,
-	  },()=>{});
+	  });
 	  await promises.mkdir(releaseDirectory, {
 		recursive: true,
-	  },()=>{});
+	  });
 	  await tar.extract({
 		file: file.path,
 		cwd: releaseDirectory,
