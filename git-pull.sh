@@ -16,7 +16,7 @@ function Git_Scripts {
  if [ ! -d ${ScriptsDir} ]
     then
       echo -e "\n${ScriptsDir} 目录不存在，开始克隆...\n"
-      mkdir ${ScriptsDir} && git clone -b $br $git ${ScriptsDir}      
+      mkdir -p ${ScriptsDir} && git clone -b $br $git ${ScriptsDir}      
       if [ $node="node" ] 
         then 
           echo -e "node开始安装依赖...\n" && cd ${ScriptsDir} && npm install  
