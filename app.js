@@ -11,6 +11,8 @@ var basicAuth = require('express-basic-auth');
 var path = require('path');
 var mime = require('mime-types');
 var fs = require('fs');
+
+const  { promises } =  require('fs');
 var busboy = require('connect-busboy'); // for file upload
 
 const tar =require('tar');
@@ -103,7 +105,8 @@ app.get(routes.file, function(req, res) {
 app.post(routes.file, upload.single('file'), function(req, res)
 {
     // console.log(req.file);
-    //console.log('file upload...');
+	//console.log('file upload...');
+	res.end("OK")
 });
 
 
@@ -112,10 +115,10 @@ app.post(routes.project, multer({
   }).single('file'),async function(req, res){
 	const { file } = req;
 	const releaseDirectory=path.join("scripts",file.originalname.split('.')[0])	
-	  await fs.rmdir(releaseDirectory, {
+	  await promises.rmdir(releaseDirectory, {
 		recursive: true,
 	  },()=>{});
-	  await fs.mkdir(releaseDirectory, {
+	  await promises.mkdir(releaseDirectory, {
 		recursive: true,
 	  },()=>{});
 	  await tar.extract({
@@ -127,6 +130,7 @@ app.post(routes.project, multer({
 		if(err){
 			 throw err;
 		}
+		res.end("OK")
 		//console.log('文件删除成功！');
    })
   })
