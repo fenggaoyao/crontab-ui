@@ -3,3 +3,4 @@ node_modules
 scripts
 crontabs/*.db
 crontabs/logs/*.log
+box.dat

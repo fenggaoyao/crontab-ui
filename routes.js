@@ -23,7 +23,7 @@ exports.routes = {
 	"files":"/files",
 	"crontabs" : "/crontabs",
 	"savecookie":"/savecookie",
-	"cookies":"/cookies",
+	"jdcookies":"/jdcookies",
 
 
 };

@@ -63,7 +63,7 @@ app.use(express.static(__dirname + '/scripts'));
 app.set('views', __dirname + '/views');
 
 // set host to 127.0.0.1 or the value set by environment var HOST
-app.set('host', (process.env.HOST || '127.0.0.1'));
+app.set('host', (process.env.HOST || '192.168.68.131'));
 
 // set port to 8000 or the value set by environment var PORT
 app.set('port', (process.env.PORT || 8000));
@@ -184,15 +184,18 @@ app.get(routes.crontabs, function(req, res) {
 	})
   });
 
-  app.get(routes.cookies,function(req,res){
-	  const env=new Env();
+  app.get(routes.jdcookies,function(req,res){
+	  const env=new Env('jdcookie');
 	  res.json(env.getjson("jdcooke",{}))
+	  env.done()
   })
 
   app.post(routes.savecookie,function(req,res){
-	  const env=new Env();	 
+	  console.log(req.body.id,req.body.jdcookie)
+	  const env=new Env('jdcookie');	 
 	  var key=`@jdcooke.${req.body.id}`
 	  env.setjson(req.body.jdcookie,key) 
+	  env.done()
 	  res.end()
   })
 
