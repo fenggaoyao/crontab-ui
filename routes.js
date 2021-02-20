@@ -17,9 +17,13 @@ exports.routes = {
 	"stdout": "/stdout",
 	"gitSync":"/gitSync",
 	"file":"/file",
-	"command":"/command",
+	"command":"/command",	
+	"project":"/project",
 
-	"project":"/project"
+	"files":"/files",
+	"crontabs" : "/crontabs",
+	"savecookie":"/savecookie",
+	"cookies":"/cookies",
 
 
 };

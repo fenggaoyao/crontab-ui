@@ -17,6 +17,8 @@ var busboy = require('connect-busboy'); // for file upload
 
 const tar =require('tar');
 
+const Env=require("./Env.min")
+
 // basic auth
 var BASIC_AUTH_USER = process.env.BASIC_AUTH_USER;
 var BASIC_AUTH_PWD = process.env.BASIC_AUTH_PWD;
@@ -33,9 +35,6 @@ if (BASIC_AUTH_USER && BASIC_AUTH_PWD) {
         }
     }))
 }
-
-
-
 
 
 // include the routes
@@ -159,12 +158,43 @@ app.get(routes.root, function(req, res) {
 			crontabs : JSON.stringify(docs),
 			backups : crontab.get_backup_names(),
 			env : crontab.get_env(),
-            moment: moment
+			moment: moment
 		});
 	});
 });
 
+/*
+jd cookie
+*/
+app.get(routes.crontabs, function(req, res) {
+	// reload the database before rendering
+	  crontab.reload_db();
+	  // send all the required parameters
+	  crontab.crontabs( function(docs){
+		  res.json(docs)		 
+	  });
+  });
 
+  app.get(routes.files, function(req, res) {
+	let folder = req.query.folder;
+	// console.log(req)
+	file.getfiles(folder,function(result){
+		// console.log("result",JSON.stringify(result))
+		res.json(result)
+	})
+  });
+
+  app.get(routes.cookies,function(req,res){
+	  const env=new Env();
+	  res.json(env.getjson("jdcooke",{}))
+  })
+
+  app.post(routes.savecookie,function(req,res){
+	  const env=new Env();	 
+	  var key=`@jdcooke.${req.body.id}`
+	  env.setjson(req.body.jdcookie,key) 
+	  res.end()
+  })
 
 
 /*
