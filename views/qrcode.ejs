@@ -15,12 +15,19 @@
     var qrcode;
     function qrcodeqenerate(){
         var name=$('#weixin').val().trim();
-        var qrcode;        
         if(!!name){
             $.post(routes.qrcode, {"name": name}, function(data){
                     //console.log(data.indexOf('https://'))
                     if(data.indexOf('https://')>=0){
-                        qrcode=new QRCode(document.getElementById("qrcode"), data);
+
+                        console.log(qrcode,!qrcode)
+                        if(!qrcode){
+                            qrcode=new QRCode(document.getElementById("qrcode"), data);
+                        }else{
+                            qrcode.clear();
+                            qrcode.makeCode(data)
+                        }
+
                         $('#msg').html('二维码有效期,请尽快打开 京东APP 扫码登录即可，请失败请重新刷新尝试')
                     }else{
                         $('#msg').html(`成功，jdCookie已存在，见下:<br/> ${data}`)
@@ -54,7 +61,7 @@
     <div class="input-group">
 
 
-    <span class="input-group-text">你的唯一识别码（如微信或手机号等）</span>
+    <span class="input-group-text">微信或手机号等</span>
    
     <input type="text" id="weixin" width="100px" aria-describedby="basic-addon3">
 

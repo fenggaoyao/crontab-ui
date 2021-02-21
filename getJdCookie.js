@@ -74,31 +74,27 @@ function loginEntrance() {
 
 
 function getCookie() {
-    setTimeout(() => {
-      $.timer = setInterval(async () => {
-        const checkRes = await checkLogin();
-        if (checkRes['errcode'] === 0) {
-          //扫描登录成功
-          $.log(`扫描登录成功\n`)
-          clearInterval($.timer);
-          await formatCookie($.checkLoginHeaders);  
-         // console.log($.uname,cookie)
-          $.done();
-        } else if (checkRes['errcode'] === 21) {
-          $.log(`二维码已失效，请重新获取二维码重新扫描\n`);
-          clearInterval($.timer);
-          $.done();
-        } else if (checkRes['errcode'] === 176) {
-          //未扫描登录
-        } else {
-          $.log(`其他异常：${JSON.stringify(checkRes)}\n`);
-          clearInterval($.timer);
-          $.done();
-        }
-      }, 10000) 
-    }, 10*1000);
-    
- 
+  $.timer = setInterval(async () => {
+    const checkRes = await checkLogin();
+    if (checkRes['errcode'] === 0) {
+      //扫描登录成功
+      $.log(`扫描登录成功\n`)
+      clearInterval($.timer);
+      await formatCookie($.checkLoginHeaders);  
+     // console.log($.uname,cookie)
+      $.done();
+    } else if (checkRes['errcode'] === 21) {
+      $.log(`二维码已失效，请重新获取二维码重新扫描\n`);
+      clearInterval($.timer);
+      $.done();
+    } else if (checkRes['errcode'] === 176) {
+      //未扫描登录
+    } else {
+      $.log(`其他异常：${JSON.stringify(checkRes)}\n`);
+      clearInterval($.timer);
+      $.done();
+    }
+  }, 1000) 
   }
 
 
