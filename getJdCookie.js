@@ -1,48 +1,48 @@
 const Env=require('./Env.min.js')
-const $ = new Env('扫码获取京东cookie');
-let s_token, cookies, guid, lsid, lstoken, okl_token, token
 
-module.exports= async function getJdCookie(uname) {
-    $.uname=uname
-    var data=$.getjson(`@jdcookie.${uname}`,{})  
-   // console.log(data)
-    var qrcode=data.jdcookie;
-    if(qrcode){
-      await TotalBean(qrcode);
-    }
-    //console.log(uname,!$.isLogin, !qrcode)
-    if(!$.isLogin || !qrcode){             
-       // console.log("qrcode",qrcode)
-       console.log($.timer,!$.timer)
-        if(!$.timer){
-          console.log('开始记时')
-          await loginEntrance();
-          qrcode= await generateQrcode(); 
-          getCookie()
-          return qrcode
-        }else{
-         setTimeout(() => {
-            clearInterval($.timer)
-            $.timer=null;           
-          }, 3*60*1000);         
 
-        }
+async function getJdUrl(uname) {
+  const $ = new Env('扫码获取京东cookie');
 
-    }
-    return `${qrcode}获取日期：${$.time('yyyy-MM-dd qq HH:mm:ss',data.date)}`;
+  let data=$.getjson(`@jdcookie.${uname}`,{})  
+  //console.log(uname,data)
+ // console.log(data)
+  let qrcode=data.jdcookie;
+  let islogin;
+  if(qrcode){
+    islogin=await TotalBean(qrcode,$);
+  }
+  //console.log(uname,!$.isLogin, !qrcode)
+  if(!islogin || !qrcode){             
+     // console.log("qrcode",qrcode)     
+     const {s_token,cookies}=  await loginEntrance($);
+     const {url,token,okl_token}= await generateQrcode(s_token,$); 
+     //console.log({s_token,url,token,cookies,okl_token} )
+     return {url,token,cookies,okl_token} 
+  }
+  return `${qrcode}获取日期：${$.time('yyyy-MM-dd qq HH:mm:ss',data.date)}`;
 }
 
-function loginEntrance() {
+function loginEntrance($) {
     return new Promise((resolve) => {
       $.get(taskUrl(), async (err, resp, data) => {
         try {
           if (err) {
             console.log(`${JSON.stringify(err)}`)
-            console.log(`${$.name} API请求失败，请检查网路重试`);
+            console.log(`API请求失败，请检查网路重试`);
           } else {
-            $.headers = resp.headers;
-            $.data = JSON.parse(data);
-            await formatSetCookies($.headers, $.data);
+            let headers = resp.headers;
+            let body = JSON.parse(data);
+
+            let s_token = body['s_token']
+            let guid = headers['set-cookie'][0]
+            guid = guid.substring(guid.indexOf("=") + 1, guid.indexOf(";"))
+            let lsid = headers['set-cookie'][2]
+            lsid = lsid.substring(lsid.indexOf("=") + 1, lsid.indexOf(";"))
+            let lstoken = headers['set-cookie'][3]
+            lstoken = lstoken.substring(lstoken.indexOf("=") + 1, lstoken.indexOf(";"))
+            let cookies = "guid=" + guid + "; lang=chs; lsid=" + lsid + "; lstoken=" + lstoken + "; "
+            resolve({s_token,cookies})
           }
         } catch (e) {
           $.logErr(e, resp)
@@ -54,60 +54,58 @@ function loginEntrance() {
   }
 
 
-  function generateQrcode() {
-    var url='';
+
+  function generateQrcode(s_token,$) {
     return new Promise((resolve) => {
-      $.post(taskPostUrl(), (err, resp, data) => {
+      $.post(taskPostUrl(s_token), (err, resp, data) => {
         try {
           if (err) {
             console.log(`${JSON.stringify(err)}`)
-            console.log(`${$.name} API请求失败，请检查网路重试`);
+            console.log(`API请求失败，请检查网路重试`);
           } else {
-            $.stepsHeaders = resp.headers;
+            
             data = JSON.parse(data);
-            token = data['token'];
+            let token = data['token'];
+
             // $.log('token', token)
   
             const setCookie = resp.headers['set-cookie'][0];
-            okl_token = setCookie.substring(setCookie.indexOf("=") + 1, setCookie.indexOf(";"))
-            url = 'https://plogin.m.jd.com/cgi-bin/m/tmauth?appid=300&client_type=m&token=' + token;
+            let okl_token = setCookie.substring(setCookie.indexOf("=") + 1, setCookie.indexOf(";"))
+            let url = 'https://plogin.m.jd.com/cgi-bin/m/tmauth?appid=300&client_type=m&token=' + token;
+            resolve({url,token,okl_token})
           }
         } catch (e) {
           $.logErr(e, resp)
         } finally {
-          resolve(url);
+          resolve();
         }
       })
     })
   }
 
 
-function getCookie() {
-  $.timer = setInterval(async () => {
-    const checkRes = await checkLogin();
+async function getCookie(uname,token,okl_token,cookies) {  
+  const $ = new Env('扫码获取京东cookie');
+
+  const {checkRes,headers} = await checkLogin(token,okl_token,cookies,$);
+  
+  var result='';
     if (checkRes['errcode'] === 0) {
-      //扫描登录成功
-      $.log(`扫描登录成功\n`)
-      clearInterval($.timer);
-      await formatCookie($.checkLoginHeaders);  
-     // console.log($.uname,cookie)
-      $.done();
+      //扫描登录成功      
+      let cookie=  await formatCookie(uname,headers,$);  
+      result=`扫描登录成功,${cookie}`;
     } else if (checkRes['errcode'] === 21) {
-      $.log(`二维码已失效，请重新获取二维码重新扫描\n`);
-      clearInterval($.timer);
-      $.done();
+      result=`二维码已失效，请重新获取二维码重新扫描`;     
     } else if (checkRes['errcode'] === 176) {
-      //未扫描登录
+      result='未扫描登录'
     } else {
-      $.log(`其他异常：${JSON.stringify(checkRes)}\n`);
-      clearInterval($.timer);
-      $.done();
+      result=`其他异常：${JSON.stringify(checkRes)}\n`;      
     }
-  }, 5000) 
+    return result;
   }
 
 
-  function checkLogin() {
+  function checkLogin(token,okl_token,cookies,$) {
     return new Promise((resolve) => {
       const options = {
         url: `https://plogin.m.jd.com/cgi-bin/m/tmauthchecktoken?&token=${token}&ou_state=0&okl_token=${okl_token}`,
@@ -125,51 +123,38 @@ function getCookie() {
         try {
           if (err) {
             console.log(`${JSON.stringify(err)}`)
-            console.log(`${$.name} API请求失败，请检查网路重试`);
+            console.log(`API请求失败，请检查网路重试`);
           } else {
             data = JSON.parse(data);
-            $.checkLoginHeaders = resp.headers;
             // $.log(`errcode:${data['errcode']}`)
           }
         } catch (e) {
           $.logErr(e, resp)
         } finally {
-          resolve(data);
+          resolve({"checkRes":data,"headers":resp.headers});
         }
       })
     })
   }
   
-function formatCookie(headers) {
-    new Promise(resolve => {
+function formatCookie(uname,headers,$) {
+   return new Promise(resolve => {
       let pt_key = headers['set-cookie'][1]
       pt_key = pt_key.substring(pt_key.indexOf("=") + 1, pt_key.indexOf(";"))
       let pt_pin = headers['set-cookie'][2]
       pt_pin = pt_pin.substring(pt_pin.indexOf("=") + 1, pt_pin.indexOf(";"))
       const cookie1 = "pt_key=" + pt_key + ";pt_pin=" + pt_pin + ";";  
-      $.UserName = decodeURIComponent(cookie1.match(/pt_pin=(.+?);/) && cookie1.match(/pt_pin=(.+?);/)[1]) 
-      var result=  {"jdUserName":$.UserName,"jdcookie":cookie1,'date':new Date().getTime()};
-      $.setjson(result,`@jdcookie.${$.uname}`) 
+      const UserName = decodeURIComponent(cookie1.match(/pt_pin=(.+?);/) && cookie1.match(/pt_pin=(.+?);/)[1]) 
+      let result=  {"jdUserName":UserName,"jdcookie":cookie1,'date':new Date().getTime()};
+      $.setjson(result,`@jdcookie.${uname}`) 
       resolve(result)
     })
   }
   
-  function formatSetCookies(headers, body) {
-    new Promise(resolve => {
-      s_token = body['s_token']
-      guid = headers['set-cookie'][0]
-      guid = guid.substring(guid.indexOf("=") + 1, guid.indexOf(";"))
-      lsid = headers['set-cookie'][2]
-      lsid = lsid.substring(lsid.indexOf("=") + 1, lsid.indexOf(";"))
-      lstoken = headers['set-cookie'][3]
-      lstoken = lstoken.substring(lstoken.indexOf("=") + 1, lstoken.indexOf(";"))
-      cookies = "guid=" + guid + "; lang=chs; lsid=" + lsid + "; lstoken=" + lstoken + "; "
-      resolve()
-    })
-  }
 
 
-  function TotalBean(cookie) {
+  function TotalBean(cookie,$) {
+    var islogin;
     return new Promise(async resolve => {
       const options = {
         "url": `https://wq.jd.com/user/info/QueryJDUserInfo?sceneval=2`,
@@ -194,12 +179,11 @@ function formatCookie(headers) {
               data = JSON.parse(data);
               //console.log(data)
               if (data['retcode'] === 13) {
-                $.isLogin = false; //cookie过期
+                isLogin = false; //cookie过期
                 return
               }else{
-                $.isLogin = true;
-              }
-              
+                isLogin = true;
+              }              
             } else {
               console.log(`京东服务器返回空数据`)
             }
@@ -207,7 +191,7 @@ function formatCookie(headers) {
         } catch (e) {
           $.logErr(e, resp)
         } finally {
-          resolve();
+          resolve({"isLogin":islogin});
         }
       })
     })
@@ -230,7 +214,7 @@ function formatCookie(headers) {
     }
   }
   
-  function taskPostUrl() {
+  function taskPostUrl(s_token) {
     return {
       url: `https://plogin.m.jd.com/cgi-bin/m/tmauthreflogurl?s_token=${s_token}&v=${Date.now()}&remember=true`,
       body: `lang=chs&appid=300&source=wq_passport&returnurl=https://wqlogin2.jd.com/passport/LoginRedirect?state=${Date.now()}&returnurl=//home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&/myJd/home.action`,
@@ -244,4 +228,10 @@ function formatCookie(headers) {
         'Host': 'plogin.m.jd.com'
       }
     }
+  }
+
+
+  module.exports= {
+    getJdUrl,
+    getCookie
   }

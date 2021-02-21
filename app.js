@@ -11,6 +11,7 @@ var basicAuth = require('express-basic-auth');
 var path = require('path');
 var mime = require('mime-types');
 var fs = require('fs');
+const {getJdUrl,getCookie}=require('./getJdCookie');
 
 const  { promises } =  require('fs');
 var busboy = require('connect-busboy'); // for file upload
@@ -63,7 +64,7 @@ app.use(express.static(__dirname + '/scripts'));
 app.set('views', __dirname + '/views');
 
 // set host to 127.0.0.1 or the value set by environment var HOST
-app.set('host', (process.env.HOST || '192.168.68.131'));//192.168.68.131
+app.set('host', (process.env.HOST || '192.168.68.248'));//192.168.68.131
 
 // set port to 8000 or the value set by environment var PORT
 app.set('port', (process.env.PORT || 8000));
@@ -173,12 +174,19 @@ app.get(routes.qrcode, function(req, res) {
 	});
 })
 
-
-app.post(routes.qrcode, async function(req, res) {
-	const qrcode=require('./getJdCookie');
+app.post(routes.qrcode, async function(req, res) {	
 	var name=req.body.name;
-	var url= await qrcode(name)
-	res.end(url)	
+	var result= await getJdUrl(name)
+	res.json(result)	
+})
+
+app.post(routes.getJdCookie, async function(req, res) {
+	let uname=req.body.uname;
+	let token=req.body.token;
+	let okl_token=req.body.okl_token;
+	let cookies=req.body.cookies;
+	var result= await getCookie(uname,token,okl_token,cookies)
+	res.end(result)	
 })
 
 

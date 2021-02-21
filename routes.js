@@ -24,6 +24,7 @@ exports.routes = {
 	"crontabs" : "/crontabs",
 	"savecookie":"/savecookie",
 	"jdcookies":"/jdcookies",
+	"getJdCookie":"/getJdCookie",
 	"qrcode":"/qrcode",
 	"setdata":"/setdata",
 	"getdata":"/getdata",

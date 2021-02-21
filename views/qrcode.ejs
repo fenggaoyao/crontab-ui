@@ -12,29 +12,31 @@
     <link rel="stylesheet" href="bootstrap.min.css" />
     <script type="text/javascript">
     var routes = [];
-    var qrcode;
+    var isvalid,qrcode,url, token,cookies,okl_token,uname
     function qrcodeqenerate(){
-        var name=$('#weixin').val().trim();
-        if(!!name){
-            $.post(routes.qrcode, {"name": name}, function(data){
-                    //console.log(data.indexOf('https://'))
-                    if(data.indexOf('https://')>=0){
-                        console.log(qrcode,!qrcode)
+        uname=$('#weixin').val().trim();
+        if(!!uname){
+            $.post(routes.qrcode, {"name": uname}, function(data){
+                console.log('data',data)
+                    if(typeof data=="string" && data.indexOf('pt_key=')>=0)
+                    {
+                        isvalid=true;                      
+                        $('#msg').html(`成功，jdCookie已存在，见下:<br/> ${data}`)
+                    }else{
+                        isvalid=false; 
+                        ({url,token,cookies,okl_token}=data)
+                        console.log(url,token,cookies,okl_token)
                         if(!qrcode){
-                            qrcode=new QRCode(document.getElementById("qrcode"), data);
+                            qrcode=new QRCode(document.getElementById("qrcode"), url);
                         }else{
                             qrcode.clear();
-                            qrcode.makeCode(data)
+                            qrcode.makeCode(url)
                         }
-
-                        $('#msg').html('二维码有效期,请尽快打开 京东APP 扫码登录即可，请失败请重新刷新尝试')
+                        $('#msg').html('有效期3分钟内,请尽快打开 京东APP 确认登录，然后点击获取凭证');
+                        
                     }
-                    console.log(data)
-                    if(data.indexOf('pt_key=')>=0)
-                    {
-                        $('#qrcode').html()
-                        $('#msg').html(`成功，jdCookie已存在，见下:<br/> ${data}`)
-                    }});           
+                
+                })    
         }else{
             $('#msg').html('请输入名字')  
         }
@@ -43,35 +45,43 @@
     }
     
     
+    function getcookie(){     
+        if(!isvalid && !!token && !!okl_token && !!cookies ){
+            $.post(routes.getJdCookie, {uname,token,okl_token,cookies}, function(data){
+                $('#msg').html(data)
+            })
+        }else{
+            $('#msg').html("先点击查询该用户名是否需要登录")
+        }
+    }
+
+
     $(function () {	
 		routes = JSON.parse('<%- routes %>');		
 	})
     </script>
-    <style>
-        .input-group {
-            margin: 2px;
-            display:flex;
-
-        }
-    </style>
+  
 </head>
 <body>
     <%- include('navbar.ejs') -%>
 
     <div class="input-group">
 
-
-    <span class="input-group-text">微信或手机号等</span>
+<p>识别码：建议微信和手机号等唯一码，用于查询自己是否京东有效。</p>
+    <span class="input-group-text">识别码</span>
    
-    <input type="text" id="weixin" width="100px" aria-describedby="basic-addon3">
+    <input type="text" id="weixin"  >
 
-    <a class="btn btn-success" onclick="qrcodeqenerate();"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> 生成京东扫描二维码</a>
+    <a class="btn btn-success" onclick="qrcodeqenerate();"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>查询</a>
+    <a class="btn btn-success" onclick="getcookie();"><span class="glyphicon glyphicon-save" aria-hidden="true"></span>获取凭证</a>
+
 </div>
+
+<div id="msg" style="color: red; margin: 20px;" ></div>
 
 
      <div id="qrcode" style="margin: 20px;"></div>
 
-<div id="msg" style="color: red; margin: 20px;" ></div>
   
     
 
