@@ -20,7 +20,14 @@ module.exports= async function getJdCookie(uname) {
           qrcode= await generateQrcode(); 
           getCookie()
           return qrcode
-        }     
+        }else{
+         setTimeout(() => {
+            clearInterval($.timer)
+            $.timer=null;           
+          }, 3*60*1000);         
+
+        }
+
     }
     return `${qrcode}获取日期：${$.time('yyyy-MM-dd qq HH:mm:ss',data.date)}`;
 }

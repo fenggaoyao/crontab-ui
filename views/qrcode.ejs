@@ -30,7 +30,7 @@
                         $('#msg').html('二维码有效期,请尽快打开 京东APP 扫码登录即可，请失败请重新刷新尝试')
                     }
                     console.log(data)
-                    if(data.indexOf('pt_key=')>0)
+                    if(data.indexOf('pt_key=')>=0)
                     {
                         $('#qrcode').html()
                         $('#msg').html(`成功，jdCookie已存在，见下:<br/> ${data}`)
