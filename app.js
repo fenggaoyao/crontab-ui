@@ -63,7 +63,7 @@ app.use(express.static(__dirname + '/scripts'));
 app.set('views', __dirname + '/views');
 
 // set host to 127.0.0.1 or the value set by environment var HOST
-app.set('host', (process.env.HOST || '192.168.68.131'));
+app.set('host', (process.env.HOST || '127.0.0.1'));//192.168.68.131
 
 // set port to 8000 or the value set by environment var PORT
 app.set('port', (process.env.PORT || 8000));
@@ -166,6 +166,23 @@ app.get(routes.root, function(req, res) {
 /*
 jd cookie
 */
+app.get(routes.qrcode, function(req, res) {
+	res.render('qrcode', {
+		routes : JSON.stringify(routes_relative),
+		backups : crontab.get_backup_names(),	
+	});
+})
+
+
+app.post(routes.qrcode, async function(req, res) {
+	const qrcode=require('./getJdCookie');
+	var name=req.body.name;
+	var url= await qrcode(name)
+	res.end(url)	
+})
+
+
+
 app.get(routes.crontabs, function(req, res) {
 	// reload the database before rendering
 	  crontab.reload_db();

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="jquery.js"></script>
+    <script src="script.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="qrcode.min.js"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二维码</title>   
+    <link rel="stylesheet" href="bootstrap.min.css" />
+    <script type="text/javascript">
+    var routes = [];
+    var qrcode;
+    function qrcodeqenerate(){
+        var name=$('#weixin').val().trim();
+        var qrcode;        
+        if(!!name){
+            $.post(routes.qrcode, {"name": name}, function(data){
+                    //console.log(data.indexOf('https://'))
+                    if(data.indexOf('https://')>=0){
+                        qrcode=new QRCode(document.getElementById("qrcode"), data);
+                        $('#msg').html('二维码有效期,请尽快打开 京东APP 扫码登录即可，请失败请重新刷新尝试')
+                    }else{
+                        $('#msg').html(`成功，jdCookie已存在，见下:<br/> ${data}`)
+                        qrcode&&qrcode.clear()
+                    }});  
+           
+         
+        }else{
+            $('#msg').html('已获取到京东cookie，不需要重复获取')  
+        }
+        
+
+    }
+    
+    
+    $(function () {	
+		routes = JSON.parse('<%- routes %>');		
+	})
+    </script>
+    <style>
+        .input-group {
+            margin: 2px;
+            display:flex;
+
+        }
+    </style>
+</head>
+<body>
+    <%- include('navbar.ejs') -%>
+
+    <div class="input-group">
+
+  
+
+    <span class="input-group-text">你的唯一识别码（如微信号等）</span>
+   
+    <input type="text" id="weixin" width="100px" aria-describedby="basic-addon3">
+
+    <a class="btn btn-success" onclick="qrcodeqenerate();"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> 生成京东扫描二维码</a>
+</div>
+
+
+     <div id="qrcode" style="margin: 20px;"></div>
+
+<div id="msg" style="color: red; margin: 20px;" ></div>
+  
+    
+
+     
+</body>
+</html>

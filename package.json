@@ -13,12 +13,14 @@
     "ejs": "latest",
     "express": "latest",
     "express-basic-auth": "^1.2.0",
+    "got": "^11.8.1",
     "mime-types": "latest",
     "moment": "latest",
+    "multer": "^1.4.1",
     "nedb": "latest",
     "nodemailer": "latest",
-    "multer": "^1.4.1",
-    "tar": "^6.0.5"
+    "tar": "^6.0.5",
+    "tough-cookie": "^4.0.0"
   },
   "engines": {
     "node": "latest"
