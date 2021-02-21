@@ -208,10 +208,12 @@ app.get(routes.crontabs, function(req, res) {
   })
 
   app.post(routes.savecookie,function(req,res){
-	  console.log(req.body.id,req.body.jdcookie)
+	  //console.log(req.body.id,req.body.jdcookie)
 	  const env=new Env('jdcookie');	 
 	  var key=`@jdcookie.${req.body.id}`
-	  env.setjson(req.body.jdcookie,key) 
+	  var val={"jdUserName":req.body.id,"jdcookie":req.body.jdcookie,'date':new Date().getTime()};
+	  console.log(val)
+	  env.setjson(val,key) 
 	  env.done()
 	  res.end()
   })

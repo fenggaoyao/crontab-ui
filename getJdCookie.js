@@ -5,20 +5,22 @@ let s_token, cookies, guid, lsid, lstoken, okl_token, token
 module.exports= async function getJdCookie(uname) {
     $.uname=uname
     var data=$.getjson(`@jdcookie.${uname}`,{})  
+   // console.log(data)
     var qrcode=data.jdcookie;
     if(qrcode){
       await TotalBean(qrcode);
     }
     //console.log(uname,!$.isLogin, !qrcode)
-    if(!$.isLogin || !qrcode){
-        await loginEntrance();
-        qrcode= await generateQrcode();        
+    if(!$.isLogin || !qrcode){             
        // console.log("qrcode",qrcode)
-        if($.timer){
-            clearInterval($.timer);
-        }
-        getCookie()
-        return qrcode
+       console.log($.timer,!$.timer)
+        if(!$.timer){
+          console.log('开始记时')
+          await loginEntrance();
+          qrcode= await generateQrcode(); 
+          getCookie()
+          return qrcode
+        }     
     }
     return `${qrcode}获取日期：${$.time('yyyy-MM-dd qq HH:mm:ss',data.date)}`;
 }
@@ -94,7 +96,7 @@ function getCookie() {
       clearInterval($.timer);
       $.done();
     }
-  }, 1000) 
+  }, 5000) 
   }
 
 
@@ -183,7 +185,7 @@ function formatCookie(headers) {
           } else {
             if (data) {
               data = JSON.parse(data);
-              console.log(data)
+              //console.log(data)
               if (data['retcode'] === 13) {
                 $.isLogin = false; //cookie过期
                 return

@@ -19,7 +19,6 @@
             $.post(routes.qrcode, {"name": name}, function(data){
                     //console.log(data.indexOf('https://'))
                     if(data.indexOf('https://')>=0){
-
                         console.log(qrcode,!qrcode)
                         if(!qrcode){
                             qrcode=new QRCode(document.getElementById("qrcode"), data);
@@ -29,14 +28,15 @@
                         }
 
                         $('#msg').html('二维码有效期,请尽快打开 京东APP 扫码登录即可，请失败请重新刷新尝试')
-                    }else{
+                    }
+                    console.log(data)
+                    if(data.indexOf('pt_key=')>0)
+                    {
+                        $('#qrcode').html()
                         $('#msg').html(`成功，jdCookie已存在，见下:<br/> ${data}`)
-                        qrcode&&qrcode.clear()
-                    }});  
-           
-         
+                    }});           
         }else{
-            $('#msg').html('已获取到京东cookie，不需要重复获取')  
+            $('#msg').html('请输入名字')  
         }
         
 
