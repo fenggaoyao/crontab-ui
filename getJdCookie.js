@@ -153,8 +153,7 @@ function formatCookie(uname,headers,$) {
   
 
 
-  function TotalBean(cookie,$) {
-    var islogin;
+  function TotalBean(cookie,$) { 
     return new Promise(async resolve => {
       const options = {
         "url": `https://wq.jd.com/user/info/QueryJDUserInfo?sceneval=2`,
@@ -179,10 +178,9 @@ function formatCookie(uname,headers,$) {
               data = JSON.parse(data);
               //console.log(data)
               if (data['retcode'] === 13) {
-                isLogin = false; //cookie过期
-                return
+                resolve(false);
               }else{
-                isLogin = true;
+                resolve(true);
               }              
             } else {
               console.log(`京东服务器返回空数据`)
@@ -191,7 +189,7 @@ function formatCookie(uname,headers,$) {
         } catch (e) {
           $.logErr(e, resp)
         } finally {
-          resolve({"isLogin":islogin});
+          resolve();
         }
       })
     })

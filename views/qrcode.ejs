@@ -22,6 +22,7 @@
                     {
                         isvalid=true;                      
                         $('#msg').html(`成功，jdCookie已存在，见下:<br/> ${data}`)
+                        $('#qrcode').html('')
                     }else{
                         isvalid=false; 
                         ({url,token,cookies,okl_token}=data)
