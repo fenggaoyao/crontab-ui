@@ -12,6 +12,7 @@ var path = require('path');
 var mime = require('mime-types');
 var fs = require('fs');
 const {getJdUrl,getCookie}=require('./getJdCookie');
+var exec = require('child_process').exec;
 
 const  { promises } =  require('fs');
 var busboy = require('connect-busboy'); // for file upload
@@ -225,6 +226,23 @@ app.get(routes.crontabs, function(req, res) {
 	  env.done()
 	  res.end()
   })
+
+  app.post(routes.imagehook,async function(req,res){
+	//console.log(req.body.id,req.body.jdcookie)
+	const env=new Env('imagehook');
+	
+	await env.wxMsg("容器镜像推送成功",JSON.stringify(req.body))
+	const tag=req.body.push_data.tag
+	const repo_full_name=req.body.repository.repo_full_name
+	const region=req.body.repository.region
+	console.log(typeof req.body,req.body)
+	exec(`sh hook.sh ${repo_full_name} ${tag} ${region}`, async function(error, stdout, stderr){
+		const msg=`标准输出：${stdout},错误输出：${stderr},错误${error}`
+		await env.wxMsg("命令执行情况",msg)
+	});
+	env.done()
+	res.end("ok")
+})
 
   app.get(routes.getdata,function(req,res){
 	const env=new Env('getdata');

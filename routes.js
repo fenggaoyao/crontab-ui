@@ -28,7 +28,8 @@ exports.routes = {
 	"qrcode":"/qrcode",
 	"setdata":"/setdata",
 	"getdata":"/getdata",
-	"wxmsg":"/wxmsg"
+	"wxmsg":"/wxmsg",
+	"imagehook":"/imagehook"
 
 
 };
