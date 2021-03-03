@@ -6,4 +6,16 @@ repo_full_name=$1
 tag=$2
 region=$3
 
-echo -e "命令执行情况:${repo_full_name},${tag},${region},...\n"
+Url="registry.cn-hangzhou.aliyuncs.com/${repo_full_name}:${tag}"
+
+ssh root@106.53.76.57
+
+id=`docker ps  | grep "coin" | awk '{print $1}'`
+
+
+if [ -z "$id" ]; then
+    echo "Empty"
+else
+    echo "Not empty"
+fi
+
