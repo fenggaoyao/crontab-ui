@@ -16,7 +16,20 @@ fi
 if [ $repo_full_name = "cloudsu/crontab-ui" ]; then  
    echo "调用生成crontab"
    crontab   
-fi       
+fi 
+
+function authserver(){
+id=\$(docker ps | grep 'auth' | awk '{print \$1}')
+if [ -z "\$id" ]; then
+  docker run -d   -p 443:443 --name auth  ${Url}
+else
+  docker stop \$id && docker rm \$id && docker run -d   -p 443:443 --name auth  ${Url}
+fi
+}
+if [ $repo_full_name = "cloudsu/authserver" ]; then  
+   echo "调用生成crontab"
+   authserver   
+fi 
 exit
 eeooff
 echo done!

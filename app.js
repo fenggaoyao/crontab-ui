@@ -65,7 +65,7 @@ app.use(express.static(__dirname + '/scripts'));
 app.set('views', __dirname + '/views');
 
 // set host to 127.0.0.1 or the value set by environment var HOST
-app.set('host', (process.env.HOST || '192.168.68.248'));//192.168.68.131
+app.set('host', (process.env.HOST || '127.0.0.1'));//192.168.68.131
 
 // set port to 8000 or the value set by environment var PORT
 app.set('port', (process.env.PORT || 8000));
@@ -74,19 +74,32 @@ app.set('port', (process.env.PORT || 8000));
 // upload handler
 var uploadStorage = multer.diskStorage(
 	{
-		destination: function (req, file, cb)
+		destination: function (req, files, cb)
 		{			
-			//console.log(req.query)			
-			if(req.query.folder)
-			 cb(null, `./scripts/${req.query.folder}`);
-			else
-			 cb(null, `./scripts`);//${req.folder}`);			  
-			  
+			//console.log(req.query.folder)			
+			if(req.query.folder){
+				const dist=`./scripts/${req.query.folder}`
+				//console.log("dist",dist)
+				if(!file.exists(dist)){
+					//console.log(file.exists(dist),dist)
+					file.mkdir(dist,{ recursive: true })
+				}				   
+				cb(null, dist);
+
+			}		
+			else{
+				const dist=`./scripts`
+				console.log("file",file.exists(dist))
+				if(!file.exists(dist)){
+					file.mkdir(dist,{ recursive: true })
+				}				 
+				cb(null, dist);//${req.folder}`);
+			}
 		},
-		filename: function (req, file, cb)
+		filename: function (req, files, cb)
 		{
 			//let fileName = checkFileExistense(req.query.folder ,file.originalname);
-			cb(null, file.originalname);
+			cb(null, files.originalname);
 		}
 	});	
 var upload = multer({ storage: uploadStorage });

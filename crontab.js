@@ -27,8 +27,6 @@ var fs = require('fs');
 var cron_parser = require("cron-parser");
 
 exports.gitsync=function(project,branch,git,env,init){
-
-
 	const shell=path.join(__dirname,"git-pull.sh")
 	exports.create_new("脚本git同步",`sh ${shell} ${project} ${branch} ${git} ${env} ${init}`,"0 23 * * *","true",null)
 	setTimeout(() => {

@@ -129,6 +129,31 @@ exports.runCommand=function(env,env_vars,command,callback){
     //  });
 }
 
+exports.exists=function(input){
+    try {
+        const stat = fs.statSync(input)
+        /* istanbul ignore else */
+        if (stat.isDirectory()) {
+          return 'dir'
+        } else if (stat.isFile()) {
+          return 'file'
+        } else {
+          return 'other'
+        }
+      } catch (err) {
+        /* istanbul ignore if */
+        if (err.code !== 'ENOENT') {
+          throw err
+        }
+        return false
+      }
+}
+
+exports.mkdir = function(input, options) {
+    // require node > v10.12
+    return fs.mkdirSync(input, { recursive: true, ...options })
+  }
+
 
 
 function ConvertSize(number)
