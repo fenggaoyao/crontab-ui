@@ -25,6 +25,9 @@ exports.routes = {
 	"savecookie":"/savecookie",
 	"jdcookies":"/jdcookies",
 	"getJdCookie":"/getJdCookie",
+	"clearOutdateCookie":"/clearOutdateCookie",
+
+
 	"qrcode":"/qrcode",
 	"setdata":"/setdata",
 	"getdata":"/getdata",

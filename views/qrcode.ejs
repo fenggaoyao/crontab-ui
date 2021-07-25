@@ -12,7 +12,48 @@
     <link rel="stylesheet" href="bootstrap.min.css" />
     <script type="text/javascript">
     var routes = [];
-    var isvalid,qrcode,url, token,cookies,okl_token,uname
+    var isvalid,qrcode,url, token,cookies,okl_token,uname,jdcookie
+   
+    function check() {
+        uname=$('#weixin').val().trim();
+        if(!!uname){
+            $.get(routes.jdcookies,(data)=>{
+               const jd=(data &&  data[uname] && JSON.parse(data[uname])) || {}
+               const date= jd.date || 0;               
+               const day = parseInt(((new Date().getTime()-date)/1000) / (24*60*60));//计算天数
+              
+               jdcookie=jd.jdcookie || "";
+               console.log(jdcookie)
+              
+               if(day>30){                 
+                  $('#msg').html(`已过${day}天,京东无效,请在下面输入jdcookie并提交`);
+               }else{                
+                  $('#msg').html(`已过${day}天,在有效期内,上次提交日期${time("yyyy-MM-dd HH:mm:ss",date)}` );                                      
+               }
+            })
+        }else{
+            $('#msg').html('请输入名字')  
+        }        
+    }
+
+    function submit() {
+        uname=$('#weixin').val().trim();
+        jdcookie=$('#jdcookie').val().trim();
+        if(!!uname && !!jdcookie){
+            if(jdcookie.indexOf('pt_key=')==-1) {
+                $('#msg').html('京东Cookie不正确')  
+                return;
+            }
+            $.post(routes.savecookie,{id:uname,jdcookie:jdcookie},(data)=>{
+                console.log(data)
+                $('#msg').html('已提交')  
+            })
+        }else{
+            $('#msg').html('请检查识别码和京东Cookie')  
+        }         
+    }
+   
+   
     function qrcodeqenerate(){
         uname=$('#weixin').val().trim();
         if(!!uname){
@@ -57,9 +98,28 @@
     }
 
 
+    function time(fmt, ts = null) {
+            const date = ts ? new Date(ts) : new Date()
+            let o = {
+              'M+': date.getMonth() + 1,
+              'd+': date.getDate(),
+              'H+': date.getHours(),
+              'm+': date.getMinutes(),
+              's+': date.getSeconds(),
+              'q+': Math.floor((date.getMonth() + 3) / 3),
+              'S': date.getMilliseconds()
+            }
+            if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length))
+            for (let k in o)
+              if (new RegExp('(' + k + ')').test(fmt))
+                fmt = fmt.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ('00' + o[k]).substr(('' + o[k]).length))
+            return fmt
+          }
+
     $(function () {	
 		routes = JSON.parse('<%- routes %>');		
 	})
+
     </script>
   
 </head>
@@ -67,14 +127,20 @@
     <%- include('navbar.ejs') -%>
 
     <div class="input-group">
-
-<p>识别码：建议微信和手机号等唯一码，用于查询自己是否京东有效。</p>
+<p>识别码：建议微信和手机号等唯一码，用于查询自己的京东是否有效。</p>
     <span class="input-group-text">识别码</span>
    
     <input type="text" id="weixin"  >
-
-    <a class="btn btn-success" onclick="qrcodeqenerate();"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>查询</a>
+    
+    <a class="btn btn-success" onclick="check();"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>查询</a>
+  
+    <!-- <a class="btn btn-success" onclick="qrcodeqenerate();"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>登陆</a>
     <a class="btn btn-success" onclick="getcookie();"><span class="glyphicon glyphicon-save" aria-hidden="true"></span>获取凭证</a>
+    -->
+   
+    <br/>
+    <span class="input-group-text">Cookie</span>
+    <input type="text" id="jdcookie">  <a class="btn btn-success" onclick="submit();"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>提交</a>
 
 </div>
 

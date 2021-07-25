@@ -147,7 +147,7 @@ function formatCookie(uname,headers,$) {
       const UserName = decodeURIComponent(cookie1.match(/pt_pin=(.+?);/) && cookie1.match(/pt_pin=(.+?);/)[1]) 
       let result=  {"jdUserName":UserName,"jdcookie":cookie1,'date':new Date().getTime()};
       $.setjson(result,`@jdcookie.${uname}`) 
-      resolve(result)
+      resolve(cookie1)
     })
   }
   

@@ -48,6 +48,7 @@ app.set('view engine', 'ejs');
 
 var bodyParser = require('body-parser');
 const { strict } = require('assert');
+const { json } = require('express');
 app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
@@ -240,6 +241,25 @@ app.get(routes.crontabs, function(req, res) {
 	  res.end()
   })
 
+  app.post(routes.clearOutdateCookie,async function(req,res){
+	const env=new Env('jdcookie');	 
+	var jdcookie=env.getjson("jdcookie",{})
+	for(let key in jdcookie){
+		let value=JSON.parse(jdcookie[key]);		
+		const day = parseInt(((new Date().getTime()-value.date)/1000) / (24*60*60));//计算天数
+		//console.log(value,day)
+		if(day>30){
+			const message=`删除key:${key},jdUserName:${value.jdUserName}`;
+			await env.wxMsg("清理过期的cookie",message)
+			console.log(message)
+			delete jdcookie[key]
+		}
+	}
+	env.setjson(jdcookie,"jdcookie")
+	env.done()
+	res.end()
+})
+
   app.post(routes.imagehook,async function(req,res){
 	//console.log(req.body.id,req.body.jdcookie)
 	const env=new Env('imagehook');
@@ -266,7 +286,7 @@ app.get(routes.crontabs, function(req, res) {
 app.post(routes.setdata,function(req,res){
 	const env=new Env('setdata');
 	console.log(typeof req.body.value)
-	env.setval(req.body.value,req.body.key) 
+	env.setdata(req.body.value,req.body.key) 
 	env.done()
 	res.end()
 })
